@@ -50,3 +50,5 @@ los comandos de la API en formato JSON.
 ```
 
 La primera solicitud retorna los datos de la versión de la tarjeta, la segunda registra la tarjeta en el proyecto respectivo y la tercera inica la sincronización entre la Notecard y el Notehub.
+
+El respostitorio con todos los datos para la instalación quedaría en github
