@@ -17,6 +17,8 @@ sudo apt install i2c-tools git
 sudo pip3 install smbus
 ```
 
+Instalado el software es necesario habilitar la comunicación por I2C en la RPi entrando en `sudo raspi-config` en el menú de opciones de interfaces.
+
 Despues hay que reiniciar y comprobar que el acceso a i2c esta funcionando `sudo i2cdetect -y 1` y clonar el repositorio de los scripts para controlar la UPS.
 
 ```bash
@@ -50,5 +52,48 @@ los comandos de la API en formato JSON.
 ```
 
 La primera solicitud retorna los datos de la versión de la tarjeta, la segunda registra la tarjeta en el proyecto respectivo y la tercera inica la sincronización entre la Notecard y el Notehub.
+
+## Comunicación entre los RPi con MQTT
+
+Los datos que recopila la RPi que funciona como controladora se van a enviar a través de MQTT donde 
+la RPi pasarela funcionara como *broker* del sistema. Para ello es necesario instalar los siguientes paquetes
+(Las librerias de Python hay que instalarlas con `sudo` para que puedan cargarse por `systemd`):
+
+```bash
+sudo apt install mosquitto mosquitto-clients
+sudo pip3 install paho-mqtt
+```
+
+Después de instalar `mosquitto` se tiene que copiar el repositorio con el script para generar el cliente de MQTT y comenzar a
+recibir mensajes de RPi-hub.
+
+```bash
+git clone https://github.com/mauriciobenjamin/mosquitto_rpivsrpi.git
+```
+
+Ahora es necesario habilitar el script para que inicie automáticamente al reiniciar la RPi-gateway. Para ello lo recomendable es incluirla en `systemd` con creando una unidad en `/lib/systemd/system/mqtt_listener.service` e incluyendo la siguiente información en el archivo:
+
+```service
+[UNIT]
+Description=Cliente de MQTT que recibe los mensajes y los transmite a BlueHub
+After=multi-user.target
+
+[SERVICE]
+Type=idle
+ExecStart=/user/bin/python3 /home/pi/mosquitto/main.py 
+StandardOutput=/home/pi/mosquitto/mqtt.log
+StandardError=/home/pi/mosquitto/errors.log
+
+[Install]
+WantedBy=multi-user.target
+```
+
+En seguida se tiene que dar los permisos necesarios al servicio con:
+
+```bash
+sudo chmod 664 /lib/systemd/system/mqtt_listener.service
+sudo systemctl daemon-reload
+sudo systemctl enable mqtt_listener.service
+```
 
 El respostitorio con todos los datos para la instalación quedaría en github
