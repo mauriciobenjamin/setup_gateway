@@ -24,6 +24,8 @@ Despues hay que reiniciar y comprobar que el acceso a i2c esta funcionando `sudo
 ```bash
 git clone https://github.com/geekworm-com/x728
 chmod +x ./x728/*.sh
+cd x728
+sudo ./x728-v2.0.sh
 ```
 
 Para después reiniciar el sistema y que se habilite el modo de apagado seguro del UPS.
