@@ -97,3 +97,41 @@ sudo systemctl enable mqtt_listener.service
 ```
 
 El respostitorio con todos los datos para la instalación quedaría en github
+
+### Reducción del consumo de energía
+
+Para evitar que las baterías se consuman demasiado rápido, se tienen que realizar los siguientes ajustes en la configuración de la RaspberryPi.
+
+#### Apagar puertos USB
+
+Para controlar el encendido y apagado de los puertos USB se empleó la utilidad `uhubctl` que permite controla la energía de los puertos USB.
+
+```Bash
+sudo apt intall libusb-1.0-0-dev
+git clone https://github.com/mvp/uhubctl
+cd uhubctl
+sudo make install
+```
+
+Para inahabilitar los puertos USB en una RPi3 se usa el comando:
+
+```Bash
+sudo uhubctl -l 1-1 -p 2 -a 0
+```
+
+Si se quisiera inhabilitar lo wifi y ethernet se puede usar:
+
+```Bash
+sudo uhubctl -l 1-1 -p 1 -a 0
+```
+Estos comandos se pueden usar en `.bashrc` para que se inactiven en cada reinicio.
+En `config.txt` se pueden activar las siguientes opciones para reducir la frecuencia del CPU y la memoria.
+
+```
+arm_freq_min=250
+core_freq_min=100
+sdram_freq_min=150
+over_voltage_min=0
+
+hdmi_blanking=1
+```
