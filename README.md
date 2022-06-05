@@ -39,7 +39,7 @@ wget https://github.com/blues/note-go/releases/download/v1.4.9/notecardcli_linux
 tar xzf notecardcli_linux_arm.tar.gz
 PATH=$PATH:/home/pi
 notecard -interface i2c
-pip3 install note-python python-periphery
+sudo pip3 install note-python python-periphery
 ```
 
 Ya en la `Notecard CLI` ya que registrar la terminal para que pueda enviar datos a la nube. Para ello primero se ejecuta el comando `notecard -play` que genera una terminal interactiva para ingresar
